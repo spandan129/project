@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import UserMessage_to_friends, friendMessage_to_user, Friends, UserMessage_to_group, othersMessage_to_group, Group_users, GroupChat, Users, Chat
+from .models import UserMessage_to_friends, friendMessage_to_user, Friends, UserMessage_to_group, othersMessage_to_group, Group_users, GroupChat, Users, Chat, Products
 
 class UserMessageToFriendsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -56,4 +56,9 @@ class ChatSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Chat
+        fields = '__all__'
+
+class ProductsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Products
         fields = '__all__'
