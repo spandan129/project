@@ -59,7 +59,7 @@ class Users(models.Model):
 
 
     def __str__(self):
-        return self.user_name
+        return str(self.user_name)
     
 class Chat(models.Model):
     user = models.ForeignKey(Users, on_delete=models.CASCADE)
@@ -72,4 +72,22 @@ class Products(models.Model):
     product_description = models.CharField(max_length=1000)
     product_category = models.CharField(max_length = 30)
 
+class Post(models.Model):
+    post_id = models.AutoField(primary_key = True)
+    user_id = models.ForeignKey(Users, on_delete = models.CASCADE, blank=False, null=False)
+    content = models.TextField()
+    image = models.ImageField(null=True, blank=True, default="default.jpg")
 
+
+    def __str__(self):
+        return str(self.post_id)
+
+class Comment(models.Model):
+    comment_id = models.AutoField(primary_key=True)
+    user_id = models.ForeignKey(Users, on_delete=models.CASCADE)
+    post_id = models.ForeignKey(Post, on_delete = models.CASCADE, blank=False, null=False)
+    actual_comment = models.TextField(default="")
+
+
+    def __str__(self):
+        return str(self.comment_id)

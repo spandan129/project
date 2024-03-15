@@ -1,7 +1,7 @@
 from rest_framework import views, status
 from rest_framework.response import Response
-from .serializer import UsersSerializer, FriendsSerializer,ProductsSerializer
-from .models import Users, Friends, Products
+from .serializer import CommentSerializer, UsersSerializer, FriendsSerializer,ProductsSerializer, PostSerializer
+from .models import Users, Friends, Products, Post, Comment
 
 class LoginApi(views.APIView):
     def post(self, request):
@@ -61,5 +61,27 @@ class ProductsAPIView(views.APIView):
         except Products.DoesNotExist:
             return Response(f'Product with ID {product_id} does not exist', status=status.HTTP_404_NOT_FOUND)
             
+class PostAPIView(views.APIView):
+    def get(self, request):
+        posts = Post.objects.all()
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)
+    
+    def post(self, request):
+        serializer = PostSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+class CommentAPIView(views.APIView):
+    def get(self, request):
+        comments = Comment.objects.all()
+        serializer = CommentSerializer(comments, many=True)
+        return Response(serializer.data)
 
+    def post(self, request):
+        serializer = CommentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.error_messages)

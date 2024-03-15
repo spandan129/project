@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import ProductsAPIView
+from .views import ProductsAPIView, PostAPIView, CommentAPIView
 from .views import LoginApi, ChatRender
 from django.conf import settings
 from django.conf.urls.static import static
@@ -9,7 +9,6 @@ urlpatterns = [
     path('chat/', ChatRender.as_view(), name='chat'),
     path('products', ProductsAPIView.as_view(), name='products-api'),
     path('products/<str:product_id>', ProductsAPIView.as_view(), name='products-api-detail'),
+    path('post/', PostAPIView.as_view(), name="post-api"),
+    path('comment/', CommentAPIView.as_view(), name="comment-api"),
 ]
-
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
