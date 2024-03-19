@@ -12,15 +12,6 @@ class friendMessage_to_user(models.Model):
     def __str__(self):
         return str(self.message_id)
 
-class Friends(models.Model):
-    friend_id = models.IntegerField(primary_key=True)
-    friend_name = models.CharField(max_length=30)
-    usermessage = models.ManyToManyField(UserMessage_to_friends, blank=True, null=True)
-    friendmessage = models.ManyToManyField(friendMessage_to_user, blank=True, null=True)
-
-
-    def __str__(self):
-        return self.friend_name
 
 class UserMessage_to_group(models.Model):
     message_id = models.AutoField(primary_key=True)
@@ -50,17 +41,33 @@ class GroupChat(models.Model):
     def __str__(self):
         return self.group_name
     
+class Friends(models.Model):
+    friend_id = models.AutoField(primary_key=True)
+    friend_name = models.CharField(max_length=30)
+    usermessage = models.ManyToManyField(UserMessage_to_friends, blank=True, null=True)
+    friendmessage = models.ManyToManyField(friendMessage_to_user, blank=True, null=True)
+
+
+    def __str__(self):
+        return self.friend_name
+
+
 class Users(models.Model):
     user_id = models.AutoField(primary_key = True)
     user_name = models.CharField(max_length=255, unique=True)
     password = models.CharField(max_length=255)
-    friends = models.ForeignKey(Friends, on_delete=models.CASCADE, blank=True, null=True)
     groupchat = models.ForeignKey(GroupChat, on_delete=models.CASCADE, blank=True, null=True)
-
 
     def __str__(self):
         return str(self.user_name)
-    
+
+class User_Friends(models.Model):
+    user_id = models.ForeignKey(Users, on_delete=models.CASCADE)
+    friend_id = models.ForeignKey(Friends, on_delete=models.CASCADE)
+    class Meta:
+        # Define a unique constraint for the combination of user and friend
+        unique_together = ['user_id', 'friend_id']
+
 class Chat(models.Model):
     user = models.ForeignKey(Users, on_delete=models.CASCADE)
 
@@ -77,7 +84,7 @@ class Post(models.Model):
     user_id = models.ForeignKey(Users, on_delete = models.CASCADE, blank=False, null=False)
     content = models.TextField()
     image = models.ImageField(null=True, blank=True, default="default.jpg")
-
+    like_count = models.IntegerField(blank=True, null=True, default=0)
 
     def __str__(self):
         return str(self.post_id)
@@ -88,6 +95,5 @@ class Comment(models.Model):
     post_id = models.ForeignKey(Post, on_delete = models.CASCADE, blank=False, null=False)
     actual_comment = models.TextField(default="")
 
-
     def __str__(self):
-        return str(self.comment_id)
+        return str(self.actual_comment)
